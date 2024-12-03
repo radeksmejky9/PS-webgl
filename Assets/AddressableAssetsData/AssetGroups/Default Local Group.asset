@@ -1,0 +1,276 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: e4df554cce954be439c6c3c750839c8d
+  m_SerializeEntries:
+  - m_GUID: 03371044c6a667e4f8fa6a65ea193443
+    m_Address: Assets/Categories/Concrete.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 070ec9960d8984d48bb9abf6e3fa4a99
+    m_Address: Assets/Materials/IFC/Plumbing/HotWater.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b1c60703f09c47478ea9e8d56b49bab
+    m_Address: Assets/Materials/IFC/Structural/Concrete.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f324209af65f7540a959d6c607f6ab5
+    m_Address: Assets/Materials/IFC/Environment.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 198554a9daacdab44ba22d40642254a9
+    m_Address: Assets/Categories/Conduit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a9d252b2ff9e37468d4f5cecfb9236c
+    m_Address: Assets/Materials/IFC/Undefined.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bec5a29fd60d3d478bf08cd3e4c18f7
+    m_Address: Assets/Categories/GeothermalSupply.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c64724f307e17a4f992ca22ae13cb84
+    m_Address: Assets/Materials/IFC/Mechanical/GeothermalSupply.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 234cb189b6dd6e54c9854872e0ed55c4
+    m_Address: Assets/Materials/IFC/Plumbing/Storm.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a83443ead46b234da5846137a76ce21
+    m_Address: Assets/Materials/IFC/Mechanical/ReturnAir.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b88009126637b14a95000d75cc8dfca
+    m_Address: Assets/Categories/Vent.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d03e5f76a0615545996baeded8e4c90
+    m_Address: Assets/Categories/Gas.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35c96ac7d9d291d4da7790c96e4ffa0d
+    m_Address: Assets/Categories/Lighting.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cedc4fce7664a5419c5a4c0199b18db
+    m_Address: Assets/Materials/IFC/Plumbing/Vent.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41ce6925c2e01da4fab202c52452978a
+    m_Address: Assets/Categories/CategoryGroup/Electricity.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category Group
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45866979441a1f647a4cfb186320f44e
+    m_Address: Assets/Categories/Waste.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5af54acf00c69eb4d87f9930c6ca8118
+    m_Address: Assets/Materials/IFC/Mechanical/GeothermalReturn.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ba53730caf128e4e9d00a6d89c9bcd3
+    m_Address: Assets/Materials/IFC/Plumbing/FireWater.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 647a535c15d45034d9c9fed4897f2ea7
+    m_Address: Assets/Materials/IFC/Mechanical/ExhaustAir.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65ca47fdbd157ea4386e3fdc70c6a8a0
+    m_Address: Assets/Categories/PVC.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a243decab9d3cc44be4e732649d980e
+    m_Address: Assets/Categories/Undefined.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72bb3ec6bcff4764f898f477cf7887a1
+    m_Address: Assets/Categories/HotWater.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f30319469b5e6a43944643045c6c4e4
+    m_Address: Assets/Categories/Door.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80eedf599bb89fa43ad06a40ee8ff190
+    m_Address: Assets/Materials/IFC/Electricity/Lighting.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 838f94ce3860b0c468202e191316d232
+    m_Address: Assets/Categories/Environment.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86a6754f8df5d704699fdce254444c3d
+    m_Address: Assets/Categories/SupplyAir.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8886f6d26c187664a90d9f65fd6b5310
+    m_Address: Assets/Materials/IFC/Mechanical/SupplyAir.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fa36948382aed844ac570deace7a107
+    m_Address: Assets/Categories/CategoryGroup/Misc.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category Group
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b8dffab98aa9e6409e43a8bb5230bc5
+    m_Address: Assets/Materials/IFC/Plumbing/PVC.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f042c875ca52444d968951fd8341384
+    m_Address: Assets/Categories/FireWater.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2d23f79ca910e7428d98522d9bfe445
+    m_Address: Assets/Materials/IFC/Plumbing/ColdWater.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6f26a5a286b3e14d94d52788c0af095
+    m_Address: Assets/Categories/ColdWater.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a94ffe504d1318f46aea37bb80545c8f
+    m_Address: Assets/Categories/Wall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aee06635a4abf2d44b20ff8b2d23d935
+    m_Address: Assets/Categories/ReturnAir.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6455afa048ab3c458929b132e467a9b
+    m_Address: Assets/Categories/GeothermalReturn.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7e5590ce10205b4e8f6e4b42853b5fe
+    m_Address: Assets/Categories/CategoryGroup/Structural.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category Group
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca75f433d0e329a4d80da1eef60b126e
+    m_Address: Assets/Categories/Window.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbc4d7bf408e8cd4eb879bd651d81698
+    m_Address: Assets/Categories/CategoryGroup/Plumbing.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category Group
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d00b0f1b9f18a764b96813ecede4e466
+    m_Address: Assets/Categories/Steel.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8af8ffec6fd5c745a9977128e520a06
+    m_Address: Assets/Categories/Storm.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de8248ba1e4747f45bebcfa5f92adc47
+    m_Address: Assets/Materials/IFC/Structural/Steel.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6b9f157dade4d045bbb73d980ad9c35
+    m_Address: Assets/Materials/IFC/Plumbing/Waste.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f890616bbbb4bb5468f7edd65075992c
+    m_Address: Assets/Categories/CategoryGroup/Mechanical.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Category Group
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9fc389500056d34d9982c3b462db38f
+    m_Address: Assets/Materials/IFC/Plumbing/Gas.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd3a1ff3706fa3a4eaa01859c440e293
+    m_Address: Assets/Materials/IFC/Electricity/Conduit.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: b883a859bdf2e0a4aaefc75ae332ba19, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fb9dbe26db007074aa1b9959f9d8fcb0, type: 2}
+    - {fileID: 11400000, guid: c44b0fa2ea1ea4d42bddbed0ce3c3553, type: 2}

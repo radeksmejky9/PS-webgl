@@ -16,7 +16,7 @@ public class ContentLoader : MonoSingleton<ContentLoader>
     public static Action OnDownloadEnd;
     public static Action<float> OnDownloadProgressChanged;
 
-    //private string uwuid = "6747195197a2ac1a87bea85e";
+    private string uwuid = "67580e448da7a407c131e65b";
 
     public List<Transform> Models => loadedModels;
     public List<Category> Categories
@@ -49,9 +49,10 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         yield return LoadDataAsync("Category Group", loadedCategoryGroups);
         yield return LoadDataAsync("Category", loadedCategories);
 #if UNITY_EDITOR
-        //MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/{uwuid}/download", this.transform, MultiObjectImporter.defaultImportOptions);
+        MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/{uwuid}/download/obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "http://www.etikos.cz/data/main.obj", this.transform, MultiObjectImporter.defaultImportOptions);
-        MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/98x0r1wmgz2j.obj", this.transform, MultiObjectImporter.defaultImportOptions);
+        //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/98x0r1wmgz2j.obj", this.transform, MultiObjectImporter.defaultImportOptions);
+        //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/Model.obj", this.transform, MultiObjectImporter.defaultImportOptions);
 #endif
     }
 
@@ -77,6 +78,11 @@ public class ContentLoader : MonoSingleton<ContentLoader>
     public void LoadModel(SnappingPoint sp)
     {
         MultiObjectImporter.ImportModelAsync($"{sp.Building}-{sp.Room}", Path.Combine(serverURL, sp.Url), this.transform, MultiObjectImporter.defaultImportOptions);
+    }
+
+    public void LoadModelFromJS(string url)
+    {
+        MultiObjectImporter.ImportModelAsync("Model", url, this.transform, MultiObjectImporter.defaultImportOptions);
     }
 }
 

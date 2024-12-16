@@ -45,7 +45,6 @@ public class ModelManager : MonoBehaviour
         models.Add(model.transform);
         LoadModels(models);
         currentModel.ProccessFittings();
-        currentModel.AddColiders();
         currentModel = null;
     }
 

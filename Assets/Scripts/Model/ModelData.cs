@@ -30,8 +30,8 @@ public class ModelData
     }
 
     public ModelData(
-        string pipe_pattern = @"(?:Pipe_Types|Pipe Types|DuctSegment|PipeSegment\b)(?<!type\b.*)",
-        string connection_pattern = "FlowFitting|Tee|Elbow|Bend",
+        string pipe_pattern = @"(?:Pipe_Types|Pipe Types|DuctSegment|PipeSegment|Pipe\b)(?<!type\b.*)",
+        string connection_pattern = @"(?:FlowFitting|Tee|Elbow|Bend|Fitting\b)",
         List<Category> categories = null)
     {
         this.PIPE_PATTERN = pipe_pattern;
@@ -76,6 +76,7 @@ public class ModelData
     private void CreateGenericCategory<T>(Match match, Transform element, string categoryType) where T : ModelElement
     {
         T modelElement = element.gameObject.AddComponent<T>();
+        modelElement.gameObject.AddComponent<BoxCollider>();
         AddCategory(modelElement, categoryType);
         usedCategories.Add(modelElement.Category);
         elements.Add(modelElement);
@@ -102,8 +103,27 @@ public class ModelData
     private void CreateFitting(Match match, Transform element)
     {
         Fitting fitting = element.gameObject.AddComponent<Fitting>();
-        Pipe closestPipe = fitting.transform.GetClosestPipe(GetElementsOfType<Pipe>().ToArray());
-        AddCategory(fitting, "Undefined");
+        fitting.gameObject.AddComponent<BoxCollider>();
+
+        string fittingType = match.Groups[1].Value.Replace(" ", "");
+        fittingType = fittingType.Replace("_", "");
+
+        if (categories.Exists(category => string.Equals(category.ToString(), fittingType, StringComparison.OrdinalIgnoreCase)))
+        {
+            AddCategory(fitting, fittingType);
+        }
+        else
+        {
+            fitting.closestPipe = fitting.transform.GetClosestPipe(GetElementsOfType<Pipe>().ToArray());
+            if (fitting.closestPipe != null)
+            {
+                AddCategory(fitting, fitting.closestPipe.Category.name);
+            }
+            else
+            {
+                AddCategory(fitting, "Undefined");
+            }
+        }
     }
     private Category FindCategory(string categoryName)
     {
@@ -122,21 +142,11 @@ public class ModelData
         var pipes = GetElementsOfType<Pipe>().ToArray();
         foreach (var element in fittings)
         {
-            var closestPipe = element.transform.GetClosestPipe(pipes);
-            if (closestPipe != null)
+            element.closestPipe = element.transform.GetClosestPipe(pipes);
+            if (element.closestPipe != null)
             {
-                AddCategory(element, category: closestPipe.Category);
+                AddCategory(element, category: element.closestPipe.Category);
             }
-        }
-    }
-
-    public void AddColiders()
-    {
-        foreach (var item in elements)
-        {
-            if (item.TryGetComponent<BoxCollider>(out _)) continue;
-
-            item.AddComponent<BoxCollider>();
         }
     }
 }

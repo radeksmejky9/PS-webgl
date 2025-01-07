@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,11 @@ using UnityEngine;
 public class Pointer : MonoBehaviour
 {
     private Camera cam;
+    private Category currentCategory = null;
     void Start()
     {
         cam = Camera.main;
+        ToggleButtonManager.OnCategorySelected += OnCategorySelected;
     }
 
     private void Update()
@@ -19,6 +22,9 @@ public class Pointer : MonoBehaviour
     }
     private void CastRay()
     {
+        if (currentCategory == null)
+            return;
+
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -28,8 +34,12 @@ public class Pointer : MonoBehaviour
 
             if (hitObject.TryGetComponent<ModelElement>(out var modelElement))
             {
-                modelElement.OnClick();
+                modelElement.OnClick(currentCategory);
             }
         }
+    }
+    private void OnCategorySelected(Category category)
+    {
+        currentCategory = category;
     }
 }

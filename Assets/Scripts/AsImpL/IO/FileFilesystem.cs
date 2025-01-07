@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
 using System.IO;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Profiling;
 
 namespace AsImpL
 {
@@ -53,7 +50,6 @@ namespace AsImpL
             else
             {
                 var downloadedText = uwr.downloadHandler.text;
-                yield return SaveToCache(fileNameWithoutExt, downloadedText);
                 yield return uwr.downloadHandler.text;
             }
 #else
@@ -150,44 +146,5 @@ namespace AsImpL
             return tex;
         }
 #endif
-        private IEnumerator SaveToCache(string modelName, string content)
-        {
-            var path = Path.Combine(Application.temporaryCachePath, $"{modelName}.txt");
-            try
-            {
-                File.WriteAllText(path, content);
-                yield break;
-            }
-            catch (IOException ex)
-            {
-                Debug.LogError($"Failed to save cache: {ex.Message}");
-            }
-            yield return null;
-        }
-
-        public IEnumerator LoadFromCache(string uri)
-        {
-            string fileName = Path.GetFileName(uri);
-            string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-            string path = Path.Combine(Application.temporaryCachePath, $"{fileNameWithoutExt}.txt");
-
-            if (File.Exists(path))
-            {
-                var task = Task.Run(() => File.ReadAllText(path));
-                while (!task.IsCompleted)
-                    yield return null;
-                string content = task.Result;
-#if UNITY_EDITOR
-                string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $"Downloads/{fileNameWithoutExt}.txt");
-                File.WriteAllText(downloadsPath, content);
-                Debug.Log($"Saved cached data to Downloads: {downloadsPath}");
-#endif
-                yield return content;
-            }
-            else
-            {
-                yield return null;
-            }
-        }
     }
 }

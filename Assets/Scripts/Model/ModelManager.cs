@@ -18,8 +18,9 @@ public class ModelManager : MonoBehaviour
 
     private void OnEnable()
     {
-        ToggleButtonManager.CategoryToggled += OnCategoryToggled;
+        ToggleButtonManager.OnCategoryToggled += OnCategoryToggled;
         ContentLoader.OnModelLoad += LoadModels;
+        ContentLoader.OnModelLoadStart += OnModelLoadStart;
         ObjectImporter.ImportingStart += OnModelImportStart;
         ObjectImporter.ImportedModel += OnModelImported;
         ObjectBuilder.ObjectBuilt += OnObjectBuilt;
@@ -27,13 +28,24 @@ public class ModelManager : MonoBehaviour
 
     private void OnDisable()
     {
-        ToggleButtonManager.CategoryToggled -= OnCategoryToggled;
+        ToggleButtonManager.OnCategoryToggled -= OnCategoryToggled;
         ContentLoader.OnModelLoad -= LoadModels;
+        ContentLoader.OnModelLoadStart -= OnModelLoadStart;
         ObjectImporter.ImportingStart -= OnModelImportStart;
         ObjectImporter.ImportedModel -= OnModelImported;
         ObjectBuilder.ObjectBuilt -= OnObjectBuilt;
 
     }
+    private void OnModelLoadStart()
+    {
+        foreach (Transform child in this.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        models.Clear();
+        modelDatas.Clear();
+    }
+
     private void OnModelImportStart()
     {
         currentModel = new ModelData(categories: ContentLoader.Instance.Categories);

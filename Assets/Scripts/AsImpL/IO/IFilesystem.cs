@@ -43,12 +43,5 @@ namespace AsImpL
         /// <param name="uri">The URI to download.</param>
         /// <returns>An enumerator usable as Coroutine in Unity.</returns>
         IEnumerator DownloadTexture(string uri);
-
-        /// <summary>
-        /// Loads the specified URI.
-        /// </summary>
-        /// <param name="uri">The URI to load.</param>
-        /// <returns>An enumerator usable as Coroutine in Unity.</returns>
-        IEnumerator LoadFromCache(string uri);
     }
 }

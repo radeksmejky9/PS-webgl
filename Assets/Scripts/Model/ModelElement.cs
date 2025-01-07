@@ -27,9 +27,9 @@ public class ModelElement : MonoBehaviour
         }
     }
 
-    public virtual void OnClick()
+    public virtual void OnClick(Category category)
     {
-        Category = ContentLoader.Instance.Categories[0];
+        Category = category;
     }
 
     protected virtual void Rename()

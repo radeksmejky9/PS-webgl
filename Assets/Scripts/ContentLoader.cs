@@ -11,12 +11,12 @@ public class ContentLoader : MonoSingleton<ContentLoader>
 {
     public string serverURL;
 
-    public static Action<List<Transform>> OnModelLoad;
+    public static event Action<List<Transform>> OnModelLoad;
+    public static event Action OnModelLoadStart;
     public static Action OnDownloadStart;
     public static Action OnDownloadEnd;
     public static Action<float> OnDownloadProgressChanged;
 
-    private string uwuid = "67580e448da7a407c131e65b";
 
     public List<Transform> Models => loadedModels;
     public List<Category> Categories
@@ -33,10 +33,15 @@ public class ContentLoader : MonoSingleton<ContentLoader>
     }
     public List<CategoryGroup> CategoryGroups => loadedCategoryGroups;
 
+    public string UID { get => uid; set => uid = value; }
+
+
     private MultiObjectImporter MultiObjectImporter;
     private List<Category> loadedCategories = new List<Category>();
     private List<CategoryGroup> loadedCategoryGroups = new List<CategoryGroup>();
     private List<Transform> loadedModels = new List<Transform>();
+    private string uid = string.Empty;
+
     protected override void Awake()
     {
         base.Awake();
@@ -49,7 +54,7 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         yield return LoadDataAsync("Category Group", loadedCategoryGroups);
         yield return LoadDataAsync("Category", loadedCategories);
 #if UNITY_EDITOR
-        MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/{uwuid}/download/obj", this.transform, MultiObjectImporter.defaultImportOptions);
+        //MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/{uwuid}/download/obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "http://www.etikos.cz/data/main.obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/98x0r1wmgz2j.obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/Model.obj", this.transform, MultiObjectImporter.defaultImportOptions);
@@ -80,9 +85,11 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         MultiObjectImporter.ImportModelAsync($"{sp.Building}-{sp.Room}", Path.Combine(serverURL, sp.Url), this.transform, MultiObjectImporter.defaultImportOptions);
     }
 
-    public void LoadModelFromJS(string url)
+    public void LoadModelFromJS(string uid, string url)
     {
-        MultiObjectImporter.ImportModelAsync("Model", url, this.transform, MultiObjectImporter.defaultImportOptions);
+        OnModelLoadStart?.Invoke();
+        this.UID = uid;
+        MultiObjectImporter.ImportModelAsync(uid, url, this.transform, MultiObjectImporter.defaultImportOptions);
     }
 }
 

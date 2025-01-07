@@ -630,17 +630,6 @@ namespace AsImpL
         {
             loadedText = null;
 
-            var cacheEnumerator = Filesystem.LoadFromCache(url);
-            yield return cacheEnumerator;
-
-            if (cacheEnumerator.Current != null)
-            {
-                loadedText = (string)cacheEnumerator.Current;
-                Debug.Log("Item loaded from temporary cache.");
-                yield break;
-            }
-
-            // If not cached, download
             var downloadEnumerator = Filesystem.DownloadUri(url, notifyErrors);
             yield return downloadEnumerator;
 

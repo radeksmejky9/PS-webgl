@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Globalization;
 
-public class ObjExporterScript
+public class ObjExporterScript2
 {
     private static int StartIndex = 0;
 
@@ -70,7 +70,7 @@ public class ObjExporterScript
     }
 }
 
-public class ObjExporter : ScriptableObject
+public class ObjExporter2 : ScriptableObject
 {
     [MenuItem("File/Export/Wavefront OBJ")]
     static void DoExportWSubmeshes()

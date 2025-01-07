@@ -4,10 +4,10 @@ public class Fitting : ModelElement
 {
     public Pipe closestPipe;
 
-    public override void OnClick()
+    public override void OnClick(Category category)
     {
         closestPipe = null;
-        base.OnClick();
+        base.OnClick(category);
     }
     protected override void Rename()
     {

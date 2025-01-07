@@ -147,7 +147,8 @@ namespace AsImpL
         {
             string currentMaterial = currObjData.faceGroups[currObjData.faceGroups.Count - 1].materialName;
 
-            if (currGroup.IsEmpty) currObjData.faceGroups.Remove(currGroup);
+            if (currGroup.IsEmpty)
+                currObjData.faceGroups.Remove(currGroup);
             FaceGroupData grp = new FaceGroupData();
             grp.materialName = currentMaterial;
             if (groupName == null)

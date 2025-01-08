@@ -503,7 +503,7 @@ MonoBehaviour:
     litDiffuse: 0
     convertToDoubleSided: 0
     modelScaling: 1
-    reuseLoaded: 1
+    reuseLoaded: 0
     inheritLayer: 0
     buildColliders: 0
     colliderConvex: 0

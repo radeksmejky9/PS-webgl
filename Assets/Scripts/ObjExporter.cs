@@ -1,24 +1,18 @@
 using UnityEngine;
-using System.IO;
 using System.Text;
 using System.Globalization;
-using System;
-using System.Runtime.InteropServices;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class ObjExporterWrapper : MonoBehaviour
 {
-    [DllImport("__Internal")]
-    private static extern int saveModel(string fileID, string file);
-
     public GameObject ModelParent;
 
     public void DoExport()
     {
         string meshName = ModelParent.GetComponentInChildren<Transform>().gameObject.name;
-        string downloadsFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Downloads";
 
         string fileName = $"{meshName}.obj";
-        string filePath = Path.Combine(downloadsFolder, fileName);
 
         ObjExporterScript.Start();
 
@@ -33,8 +27,7 @@ public class ObjExporterWrapper : MonoBehaviour
 
         meshString.Append(ProcessTransform(t, true));
 
-        //WriteToFile(meshString.ToString(), filePath);
-        saveModel(ContentLoader.Instance.UID, meshString.ToString());
+        StartCoroutine(UploadObj(meshString.ToString(), fileName, $"http://192.168.37.142:5000/files/{ContentLoader.Instance.UID}"));
 
         t.position = originalPosition;
 
@@ -69,10 +62,30 @@ public class ObjExporterWrapper : MonoBehaviour
         return meshString.ToString();
     }
 
-    private void WriteToFile(string s, string filename)
+    private IEnumerator UploadObj(string objString, string fileName, string serverUrl)
     {
-        using var sw = new StreamWriter(filename);
-        sw.Write(s);
+        // Create the multipart form data.
+        WWWForm form = new WWWForm();
+        byte[] fileData = Encoding.UTF8.GetBytes(objString);
+
+        // Add the .obj file to the form data with its file name.
+        //form.AddBinaryData("file", fileData, fileName, "text/plain");
+
+        // Create the UnityWebRequest for POST.
+        using (UnityWebRequest www = UnityWebRequest.Put(serverUrl, fileData))
+        {
+            // Send the request and wait for a response.
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("File uploaded successfully: " + www.downloadHandler.text);
+            }
+            else
+            {
+                Debug.LogError("File upload failed: " + www.error);
+            }
+        }
     }
 
 }

@@ -54,10 +54,11 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         yield return LoadDataAsync("Category Group", loadedCategoryGroups);
         yield return LoadDataAsync("Category", loadedCategories);
 #if UNITY_EDITOR
-        //MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/{uwuid}/download/obj", this.transform, MultiObjectImporter.defaultImportOptions);
+        //MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/6758016b798dce146441e571/download/obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "http://www.etikos.cz/data/main.obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/98x0r1wmgz2j.obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/Model.obj", this.transform, MultiObjectImporter.defaultImportOptions);
+        LoadModelFromJS("6758016b798dce146441e571,http://192.168.37.142:5000/files/6758016b798dce146441e571/download/obj");
 #endif
     }
 
@@ -85,11 +86,12 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         MultiObjectImporter.ImportModelAsync($"{sp.Building}-{sp.Room}", Path.Combine(serverURL, sp.Url), this.transform, MultiObjectImporter.defaultImportOptions);
     }
 
-    public void LoadModelFromJS(string uid, string url)
+    public void LoadModelFromJS(string message)
     {
+        string[] data = message.Split(",");
         OnModelLoadStart?.Invoke();
-        this.UID = uid;
-        MultiObjectImporter.ImportModelAsync(uid, url, this.transform, MultiObjectImporter.defaultImportOptions);
+        this.UID = data[0];
+        MultiObjectImporter.ImportModelAsync(uid, data[1], this.transform, MultiObjectImporter.defaultImportOptions);
     }
 }
 

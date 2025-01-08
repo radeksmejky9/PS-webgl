@@ -30,12 +30,6 @@ public class ObjExporterWrapper : MonoBehaviour
         meshString.Append(ProcessTransform(t, true));
 
         StartCoroutine(UploadObj(meshString.ToString(), fileName, $"http://192.168.37.142:5000/files/{ContentLoader.Instance.UID}"));
-
-        // Save the .obj file to the Downloads folder
-        string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-        string fullPath = Path.Combine(downloadsPath, fileName);
-        File.WriteAllText(fullPath, meshString.ToString());
-
         t.position = originalPosition;
 
         ObjExporterScript.End();
@@ -117,26 +111,33 @@ public class ObjExporterScript
 
         var objString = new StringBuilder();
 
+        // Correct for Unity's coordinate system by flipping the z-axis
         foreach (Vector3 vv in m.vertices)
         {
+            // Transform the vertex to world space
             Vector3 v = t.TransformPoint(vv);
+            // Apply correction for the OBJ coordinate system (flip z-axis)
+            v = new Vector3(v.x, v.y, -v.z); // Flip z-axis to prevent flipping
             numVertices++;
             objString.Append(string.Format(CultureInfo.InvariantCulture, "v {0} {1} {2}\n", v.x, v.y, v.z));
         }
         objString.Append("\n");
 
-        Quaternion r = t.localRotation;
+        // Correct normals
         foreach (Vector3 nn in m.normals)
         {
-            Vector3 v = r * nn;
+            Vector3 v = t.localRotation * nn;
+            // Flip the z-axis for normals
+            v = new Vector3(v.x, v.y, -v.z);
             objString.Append(string.Format(CultureInfo.InvariantCulture, "vn {0} {1} {2}\n", v.x, v.y, v.z));
         }
         objString.Append("\n");
 
-        foreach (Vector3 v in m.uv)
+        foreach (Vector2 uv in m.uv)
         {
-            objString.Append(string.Format(CultureInfo.InvariantCulture, "vt {0} {1}\n", v.x, v.y));
+            objString.Append(string.Format(CultureInfo.InvariantCulture, "vt {0} {1}\n", uv.x, uv.y));
         }
+
         for (int material = 0; material < m.subMeshCount; material++)
         {
             objString.Append("\n");
@@ -146,9 +147,11 @@ public class ObjExporterScript
             int[] triangles = m.GetTriangles(material);
             for (int i = 0; i < triangles.Length; i += 3)
             {
-                var t0 = triangles[i] + 1 + StartIndex;
-                var t1 = triangles[i + 1] + 1 + StartIndex;
-                var t2 = triangles[i + 2] + 1 + StartIndex;
+                // Reverse the winding order to fix flipped faces
+                int t0 = triangles[i] + 1 + StartIndex;
+                int t1 = triangles[i + 2] + 1 + StartIndex; // Swap these two
+                int t2 = triangles[i + 1] + 1 + StartIndex; // Swap these two
+
                 objString.Append(string.Format(CultureInfo.InvariantCulture, "f {0}/{0}/{0} {1}/{1}/{1} {2}/{2}/{2}\n", t0, t1, t2));
             }
         }

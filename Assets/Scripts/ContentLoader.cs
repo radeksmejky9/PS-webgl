@@ -58,7 +58,7 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         //MultiObjectImporter.ImportModelAsync("Model", "http://www.etikos.cz/data/main.obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/98x0r1wmgz2j.obj", this.transform, MultiObjectImporter.defaultImportOptions);
         //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/Model.obj", this.transform, MultiObjectImporter.defaultImportOptions);
-        LoadModelFromJS("677e3a6bb65705003b6ca48c,http://192.168.37.142:5000/files/677e3a6bb65705003b6ca48c/download/obj");
+        LoadModelFromJS("677e7f5151eaf9834b9e7fdc,http://192.168.37.142:5000/files/677e7f5151eaf9834b9e7fdc/download/obj");
 #endif
     }
 

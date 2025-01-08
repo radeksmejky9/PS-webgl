@@ -7,14 +7,12 @@ using UnityEngine;
 public class ModelManager : MonoBehaviour
 {
     public static event Action<HashSet<Category>> OnModelsLoaded;
-    public Dictionary<GameObject, List<string>> keyValuePairs;
+    public ModelTypes ModelTypes;
+
+    [SerializeField] private List<Transform> models = new List<Transform>();
+    [SerializeField] private List<ModelData> modelDatas = new List<ModelData>();
 
     private ModelData currentModel;
-    [SerializeField]
-    private List<Transform> models = new List<Transform>();
-
-    [SerializeField]
-    private List<ModelData> modelDatas = new List<ModelData>();
 
     private void OnEnable()
     {
@@ -48,7 +46,7 @@ public class ModelManager : MonoBehaviour
 
     private void OnModelImportStart()
     {
-        currentModel = new ModelData(categories: ContentLoader.Instance.Categories);
+        currentModel = new ModelData(ModelTypes, categories: ContentLoader.Instance.Categories);
         modelDatas.Add(currentModel);
     }
     private void OnModelImported(GameObject model, string path)
@@ -90,7 +88,7 @@ public class ModelManager : MonoBehaviour
     }
     private void UpdateVisibility(ModelData data)
     {
-        foreach (var element in data.GetElementsOfType<ModelElement>())
+        foreach (var element in data.GetElements())
         {
             element.gameObject.SetActive(data.Filter.Contains(element.Category));
         }

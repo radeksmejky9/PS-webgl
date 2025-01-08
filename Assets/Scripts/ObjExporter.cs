@@ -3,6 +3,8 @@ using System.Text;
 using System.Globalization;
 using UnityEngine.Networking;
 using System.Collections;
+using System.IO;
+using System;
 
 public class ObjExporterWrapper : MonoBehaviour
 {
@@ -28,6 +30,11 @@ public class ObjExporterWrapper : MonoBehaviour
         meshString.Append(ProcessTransform(t, true));
 
         StartCoroutine(UploadObj(meshString.ToString(), fileName, $"http://192.168.37.142:5000/files/{ContentLoader.Instance.UID}"));
+
+        // Save the .obj file to the Downloads folder
+        string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+        string fullPath = Path.Combine(downloadsPath, fileName);
+        File.WriteAllText(fullPath, meshString.ToString());
 
         t.position = originalPosition;
 
@@ -64,17 +71,13 @@ public class ObjExporterWrapper : MonoBehaviour
 
     private IEnumerator UploadObj(string objString, string fileName, string serverUrl)
     {
-        // Create the multipart form data.
-        WWWForm form = new WWWForm();
         byte[] fileData = Encoding.UTF8.GetBytes(objString);
 
-        // Add the .obj file to the form data with its file name.
-        //form.AddBinaryData("file", fileData, fileName, "text/plain");
-
-        // Create the UnityWebRequest for POST.
         using (UnityWebRequest www = UnityWebRequest.Put(serverUrl, fileData))
         {
-            // Send the request and wait for a response.
+            www.SetRequestHeader("Content-Type", "text/plain");
+            www.SetRequestHeader("File-Name", fileName);
+
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.Success)
@@ -87,7 +90,6 @@ public class ObjExporterWrapper : MonoBehaviour
             }
         }
     }
-
 }
 
 public class ObjExporterScript

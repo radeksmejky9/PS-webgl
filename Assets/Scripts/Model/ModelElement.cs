@@ -1,9 +1,9 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ModelElement : MonoBehaviour
 {
     [SerializeField] protected Category category;
+    [SerializeField] private ModelType modelType;
     private MeshRenderer meshRenderer;
 
     public Category Category
@@ -27,6 +27,12 @@ public class ModelElement : MonoBehaviour
         }
     }
 
+    public ModelType ModelType
+    {
+        get => modelType;
+        set => modelType = value;
+    }
+
     public virtual void OnClick(Category category)
     {
         Category = category;
@@ -34,6 +40,6 @@ public class ModelElement : MonoBehaviour
 
     protected virtual void Rename()
     {
-        this.gameObject.name = $"{GetType().Name}:{category.Material.name}:";
+        this.gameObject.name = $"{modelType.Type}:{category.name}:";
     }
 }

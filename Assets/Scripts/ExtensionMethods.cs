@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class Extensions
 {
-    public static Pipe GetClosestPipe(this Transform source, Pipe[] pipes)
+    public static ModelElement GetClosestPipe(this Transform source, ModelElement[] pipes)
     {
         float sphereRadius = 0.001f;
         float maxRadius = 1.0f;
@@ -11,7 +11,7 @@ public static class Extensions
 
         Vector3 sourcePosition = source.position;
 
-        Pipe closestObject = null;
+        ModelElement closestObject = null;
         float closestDistance = Mathf.Infinity;
 
 
@@ -27,9 +27,9 @@ public static class Extensions
 
             foreach (Collider collider in hitColliders)
             {
-                Pipe hitPipe = collider.GetComponent<Pipe>();
+                ModelElement hitPipe = collider.GetComponent<ModelElement>();
 
-                if (hitPipe != null && System.Array.Exists(pipes, pipe => pipe == hitPipe))
+                if (hitPipe != null && hitPipe.ModelType.Type == "Pipe" && System.Array.Exists(pipes, pipe => pipe == hitPipe))
                 {
                     Vector3 directionToTarget = hitPipe.transform.position - sourcePosition;
                     float dSqrToTarget = directionToTarget.sqrMagnitude;

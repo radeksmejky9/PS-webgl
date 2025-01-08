@@ -2,42 +2,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
 public class ModelData
 {
-    private readonly string PIPE_PATTERN;
-    private readonly string CONNECTION_PATTERN;
     private readonly List<Category> categories;
     private readonly List<ModelElement> elements = new List<ModelElement>();
     private readonly HashSet<Category> usedCategories = new HashSet<Category>();
 
     private GameObject model;
     private List<Category> filter;
+    private ModelTypes modelTypes;
 
     public GameObject Model { get => model; set => model = value; }
     public List<Category> Filter { get => filter; set => filter = value; }
     public HashSet<Category> UsedCategories => usedCategories;
-    public List<T> GetElementsOfType<T>() where T : ModelElement
+    public List<ModelElement> GetElementsOfType(ModelType modelType)
     {
-        return elements.OfType<T>().ToList();
+        return elements.Where(e => e.ModelType == modelType).ToList();
     }
-    public List<T> GetElementsOfCategory<T>(Category category) where T : ModelElement
+    public List<ModelElement> GetElementsOfCategory(Category category)
     {
-        return elements.OfType<T>().Where(e => e.Category == category).ToList();
+        return elements.Where(e => e.Category == category).ToList();
+    }
+    public List<ModelElement> GetElements()
+    {
+        return elements;
     }
 
-    public ModelData(
-        string pipe_pattern = @"(?:Pipe_Types|Pipe Types|DuctSegment|PipeSegment|Pipe\b)(?<!type\b.*)",
-        string connection_pattern = @"(?:FlowFitting|Tee|Elbow|Bend|Fitting\b)",
-        List<Category> categories = null)
+    public ModelData(ModelTypes modelTypes, List<Category> categories = null)
     {
-        this.PIPE_PATTERN = pipe_pattern;
-        this.CONNECTION_PATTERN = connection_pattern;
         this.categories = categories ?? new List<Category> { };
         this.Filter = this.categories.ToList();
+        this.modelTypes = modelTypes;
     }
 
     public void BuildElement(GameObject element)
@@ -45,54 +43,78 @@ public class ModelData
         Transform elementTransform = element.transform;
         if (element.TryGetComponent<ModelElement>(out _)) return;
 
-        switch (element.name)
+        string elementName = element.name;
+        ModelType modelType = modelTypes.GetModelTypeByName(elementName);
+
+        if (Regex.IsMatch(elementName, modelType.Regex, RegexOptions.IgnoreCase))
         {
-            case var name when Regex.IsMatch(name, PIPE_PATTERN, RegexOptions.IgnoreCase):
-                CreatePipe(Regex.Match(name, @":([^:]+):", RegexOptions.IgnoreCase), elementTransform);
-                break;
+            Match match = Regex.Match(elementName, @":([^:]+):", RegexOptions.IgnoreCase);
+            switch (modelType.Type)
+            {
+                case "Pipe":
+                    CreatePipe(match, elementTransform, modelType);
+                    break;
 
-            case var name when Regex.IsMatch(name, CONNECTION_PATTERN, RegexOptions.IgnoreCase):
-                CreateFitting(Regex.Match(name, @":([^:]+):", RegexOptions.IgnoreCase), elementTransform);
-                break;
+                case "Connection":
+                    CreateFitting(match, elementTransform, modelType);
+                    break;
 
-            case var name when Regex.IsMatch(name, "Wall", RegexOptions.IgnoreCase):
-                CreateGenericCategory<Wall>(Regex.Match(name, "Waål"), elementTransform, "Wall");
-                break;
+                case "Wall":
+                    CreateGenericCategory(match, elementTransform, "Wall", modelType);
+                    break;
 
-            case var name when Regex.IsMatch(name, "Door", RegexOptions.IgnoreCase):
-                CreateGenericCategory<Door>(Regex.Match(name, "Door"), elementTransform, "Door");
-                break;
+                case "Door":
+                    CreateGenericCategory(match, elementTransform, "Door", modelType);
+                    break;
 
-            case var name when Regex.IsMatch(name, "Window", RegexOptions.IgnoreCase):
-                CreateGenericCategory<Window>(Regex.Match(name, "Window"), elementTransform, "Window");
-                break;
+                case "Window":
+                    CreateGenericCategory(match, elementTransform, "Window", modelType);
+                    break;
 
-            default:
-                Match match = Regex.Match(element.name, string.Empty, RegexOptions.IgnoreCase);
-                CreateGenericCategory<ModelElement>(match, elementTransform, "Environment");
-                break;
+                default:
+                    CreateGenericCategory(match, elementTransform, "Environment", modelType);
+                    break;
+            }
+        }
+        else
+        {
+            CreateGenericCategory(Regex.Match(elementName, string.Empty, RegexOptions.IgnoreCase), elementTransform, "Environment", modelType);
         }
     }
-    private void CreateGenericCategory<T>(Match match, Transform element, string categoryType) where T : ModelElement
+
+    private void CreateGenericCategory(Match match, Transform element, string categoryType, ModelType modelType)
     {
-        T modelElement = element.gameObject.AddComponent<T>();
-        modelElement.gameObject.AddComponent<BoxCollider>();
-        AddCategory(modelElement, categoryType);
+        element.gameObject.AddComponent<BoxCollider>();
+        ModelElement modelElement = element.gameObject.AddComponent<ModelElement>();
+        modelElement.ModelType = modelType;
+
+        string elementCategory = match.Groups[1].Value.Replace(" ", "");
+        elementCategory = elementCategory.Replace("_", "");
+
+        if (categories.Exists(category => string.Equals(category.ToString(), elementCategory, StringComparison.OrdinalIgnoreCase)))
+        {
+            AddCategory(modelElement, elementCategory);
+        }
+        else
+        {
+            AddCategory(modelElement, categoryType);
+        }
         usedCategories.Add(modelElement.Category);
         elements.Add(modelElement);
     }
 
-    private void CreatePipe(Match match, Transform element)
+    private void CreatePipe(Match match, Transform element, ModelType modelType)
     {
-        Pipe pipe = element.gameObject.AddComponent<Pipe>();
-        pipe.gameObject.AddComponent<BoxCollider>();
+        element.gameObject.AddComponent<BoxCollider>();
+        ModelElement pipe = element.gameObject.AddComponent<ModelElement>();
+        pipe.ModelType = modelType;
 
-        string pipeType = match.Groups[1].Value.Replace(" ", "");
-        pipeType = pipeType.Replace("_", "");
+        string pipeCategory = match.Groups[1].Value.Replace(" ", "");
+        pipeCategory = pipeCategory.Replace("_", "");
 
-        if (categories.Exists(category => string.Equals(category.ToString(), pipeType, StringComparison.OrdinalIgnoreCase)))
+        if (categories.Exists(category => string.Equals(category.ToString(), pipeCategory, StringComparison.OrdinalIgnoreCase)))
         {
-            AddCategory(pipe, pipeType);
+            AddCategory(pipe, pipeCategory);
         }
         else
         {
@@ -100,24 +122,25 @@ public class ModelData
         }
     }
 
-    private void CreateFitting(Match match, Transform element)
+    private void CreateFitting(Match match, Transform element, ModelType modelType)
     {
-        Fitting fitting = element.gameObject.AddComponent<Fitting>();
-        fitting.gameObject.AddComponent<BoxCollider>();
+        element.gameObject.AddComponent<BoxCollider>();
+        ModelElement fitting = element.gameObject.AddComponent<ModelElement>();
+        fitting.ModelType = modelType;
 
-        string fittingType = match.Groups[1].Value.Replace(" ", "");
-        fittingType = fittingType.Replace("_", "");
+        string fittingCategory = match.Groups[1].Value.Replace(" ", "");
+        fittingCategory = fittingCategory.Replace("_", "");
 
-        if (categories.Exists(category => string.Equals(category.ToString(), fittingType, StringComparison.OrdinalIgnoreCase)))
+        if (categories.Exists(category => string.Equals(category.ToString(), fittingCategory, StringComparison.OrdinalIgnoreCase)))
         {
-            AddCategory(fitting, fittingType);
+            AddCategory(fitting, fittingCategory);
         }
         else
         {
-            fitting.closestPipe = fitting.transform.GetClosestPipe(GetElementsOfType<Pipe>().ToArray());
-            if (fitting.closestPipe != null)
+            ModelElement closestPipe = fitting.transform.GetClosestPipe(GetElementsOfType(modelTypes.GetModelTypeByName("Pipe")).ToArray());
+            if (closestPipe != null)
             {
-                AddCategory(fitting, fitting.closestPipe.Category.name);
+                AddCategory(fitting, closestPipe.Category.name);
             }
             else
             {
@@ -138,14 +161,14 @@ public class ModelData
 
     public void ProccessFittings()
     {
-        var fittings = GetElementsOfType<Fitting>();
-        var pipes = GetElementsOfType<Pipe>().ToArray();
+        var fittings = GetElementsOfType(modelTypes.GetModelTypeByName("Fitting"));
+        var pipes = GetElementsOfType(modelTypes.GetModelTypeByName("Pipe")).ToArray();
         foreach (var element in fittings)
         {
-            element.closestPipe = element.transform.GetClosestPipe(pipes);
-            if (element.closestPipe != null)
+            ModelElement closestPipe = element.transform.GetClosestPipe(pipes);
+            if (closestPipe != null)
             {
-                AddCategory(element, category: element.closestPipe.Category);
+                AddCategory(element, category: closestPipe.Category);
             }
         }
     }

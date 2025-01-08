@@ -542,6 +542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7a58cac54f24be40b777c7bd44f1bcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ModelTypes: {fileID: 11400000, guid: cf601752c571bd74fa65958d100b4ed6, type: 2}
   models: []
 --- !u!114 &965218460
 MonoBehaviour:

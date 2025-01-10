@@ -84,7 +84,7 @@ public class ModelData
 
     private void CreateGenericCategory(Match match, Transform element, string categoryType, ModelType modelType)
     {
-        element.gameObject.AddComponent<BoxCollider>();
+        element.gameObject.AddComponent<MeshCollider>();
         ModelElement modelElement = element.gameObject.AddComponent<ModelElement>();
         modelElement.ModelType = modelType;
 
@@ -105,7 +105,7 @@ public class ModelData
 
     private void CreatePipe(Match match, Transform element, ModelType modelType)
     {
-        element.gameObject.AddComponent<BoxCollider>();
+        element.gameObject.AddComponent<MeshCollider>();
         ModelElement pipe = element.gameObject.AddComponent<ModelElement>();
         pipe.ModelType = modelType;
 
@@ -124,7 +124,7 @@ public class ModelData
 
     private void CreateFitting(Match match, Transform element, ModelType modelType)
     {
-        element.gameObject.AddComponent<BoxCollider>();
+        element.gameObject.AddComponent<MeshCollider>();
         ModelElement fitting = element.gameObject.AddComponent<ModelElement>();
         fitting.ModelType = modelType;
 

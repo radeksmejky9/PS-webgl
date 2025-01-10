@@ -10,12 +10,6 @@ public class CameraMovement : MonoBehaviour
     public float maxOrbitSpeed = 5f;
     [Tooltip("Minimum orbit speed when closest to objects.")]
     public float minOrbitSpeed = 1f;
-    [Tooltip("Maximum distance for the raycast to adjust orbit speed.")]
-    public float raycastMaxDistance = 100f;
-    [Tooltip("Number of rays cast in a cone to determine average distance.")]
-    public int rayCount = 10;
-    [Tooltip("Angle of the cone for multiple raycasts.")]
-    public float coneAngle = 15f;
 
     [Header("Pan Settings")]
     [Tooltip("Speed of camera panning.")]
@@ -37,8 +31,7 @@ public class CameraMovement : MonoBehaviour
     [Tooltip("Multiplier for movement speed when holding Shift.")]
     public float boostMultiplier = 2f;
 
-    private Vector3 target; // Target point the camera orbits around.
-    private float distance; // Current distance from the target.
+    private float distance; // Current distance from the camera to a virtual pivot point.
     private float targetDistance; // Desired distance (for smooth zooming).
     private Vector3 lastMousePosition;
 
@@ -49,21 +42,22 @@ public class CameraMovement : MonoBehaviour
 
     void Start()
     {
-        // Initialize target based on the camera's initial position.
-        target = transform.position + transform.forward * 10f;
-        distance = Vector3.Distance(transform.position, target);
+        distance = 10f;
         targetDistance = distance;
         lastMousePosition = Input.mousePosition;
         currentOrbitSpeed = maxOrbitSpeed;
     }
+
     private void OnEnable()
     {
         MultiObjectImporter.ImportedModel += OnModelImported;
     }
+
     private void OnDisable()
     {
         MultiObjectImporter.ImportedModel -= OnModelImported;
     }
+
     private void OnModelImported(GameObject model, string path)
     {
         isActive = true;
@@ -74,58 +68,21 @@ public class CameraMovement : MonoBehaviour
         if (!isActive)
             return;
 
-
-        AdjustOrbitSpeed();
         HandleInput();
         SmoothZoom();
-    }
-
-    void AdjustOrbitSpeed()
-    {
-        float totalHitDistance = 0f;
-        int hitCount = 0;
-
-        // Cast multiple rays in a cone-like pattern.
-        for (int i = 0; i < rayCount; i++)
-        {
-            // Generate a random direction within the cone.
-            Vector3 randomDirection = Random.insideUnitSphere;
-            randomDirection.y = Mathf.Clamp(randomDirection.y, -0.5f, 0.5f); // Restrict vertical spread.
-            randomDirection = Vector3.Lerp(transform.forward, randomDirection, coneAngle / 90f).normalized;
-
-            // Perform a raycast.
-            if (Physics.Raycast(transform.position, randomDirection, out RaycastHit hit, raycastMaxDistance))
-            {
-                totalHitDistance += hit.distance;
-                hitCount++;
-                Debug.DrawLine(transform.position, hit.point, Color.red);
-            }
-        }
-
-        // Calculate average hit distance if there are valid hits.
-        if (hitCount > 0)
-        {
-            float averageDistance = totalHitDistance / hitCount;
-            currentOrbitSpeed = Mathf.Lerp(minOrbitSpeed, maxOrbitSpeed, averageDistance / raycastMaxDistance);
-        }
-        else
-        {
-            // Default to max orbit speed if no valid hits.
-            currentOrbitSpeed = maxOrbitSpeed;
-        }
     }
 
     void HandleInput()
     {
         Vector3 mouseDelta = Input.mousePosition - lastMousePosition;
 
-        // Orbit around the target.
+        // Rotate the camera.
         if (Input.GetMouseButton(1)) // Right mouse button.
         {
-            float yaw = mouseDelta.x * currentOrbitSpeed * Time.deltaTime;
-            float pitch = -mouseDelta.y * currentOrbitSpeed * Time.deltaTime;
-            transform.RotateAround(target, Vector3.up, yaw);
-            transform.RotateAround(target, transform.right, pitch);
+            float yaw = mouseDelta.x * maxOrbitSpeed * Time.deltaTime;
+            float pitch = -mouseDelta.y * maxOrbitSpeed * Time.deltaTime;
+            transform.Rotate(Vector3.up, yaw, Space.World);
+            transform.Rotate(Vector3.right, pitch, Space.Self);
         }
 
         // Pan the camera.
@@ -133,7 +90,6 @@ public class CameraMovement : MonoBehaviour
         {
             Vector3 pan = transform.right * -mouseDelta.x * panSpeed * Time.deltaTime
                         + transform.up * -mouseDelta.y * panSpeed * Time.deltaTime;
-            target += pan;
             transform.position += pan;
         }
 
@@ -146,8 +102,8 @@ public class CameraMovement : MonoBehaviour
         }
 
         // WASD movement.
-        float horizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right Arrow.
-        float vertical = Input.GetAxis("Vertical");     // W/S or Up/Down Arrow.
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
         float moveMultiplier = Input.GetKey(KeyCode.LeftShift) ? boostMultiplier : 1f;
 
         Vector3 forwardMovement = transform.forward * vertical;
@@ -155,19 +111,12 @@ public class CameraMovement : MonoBehaviour
 
         transform.position += moveMultiplier * moveSpeed * Time.deltaTime * (forwardMovement + rightMovement);
 
-        // Update target to match position if WASD is used.
-        if (horizontal != 0 || vertical != 0)
-        {
-            target = transform.position + transform.forward * targetDistance;
-        }
-
         lastMousePosition = Input.mousePosition;
     }
 
     void SmoothZoom()
     {
         distance = Mathf.Lerp(distance, targetDistance, zoomSmoothness);
-        Vector3 direction = (transform.position - target).normalized;
-        transform.position = target + direction * distance;
+        transform.position += transform.forward * (targetDistance - distance);
     }
 }

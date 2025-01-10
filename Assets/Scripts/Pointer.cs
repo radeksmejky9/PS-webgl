@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Pointer : MonoBehaviour
 {
@@ -34,6 +35,8 @@ public class Pointer : MonoBehaviour
 
             if (hitObject.TryGetComponent<ModelElement>(out var modelElement))
             {
+                if (EventSystem.current.IsPointerOverGameObject()) return;
+
                 modelElement.OnClick(currentCategory);
             }
         }

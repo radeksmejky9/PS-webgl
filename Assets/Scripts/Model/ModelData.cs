@@ -48,7 +48,7 @@ public class ModelData
 
         if (Regex.IsMatch(elementName, modelType.Regex, RegexOptions.IgnoreCase))
         {
-            Match match = Regex.Match(elementName, @":([^:]+):", RegexOptions.IgnoreCase);
+            Match match = Regex.Match(elementName, @"(?:[^:]*:)?([^:]+):(?:[^:]*):?_ID(\d+)_:", RegexOptions.IgnoreCase);
             switch (modelType.Type)
             {
                 case "Pipe":
@@ -99,6 +99,12 @@ public class ModelData
         {
             AddCategory(modelElement, categoryType);
         }
+
+        if (Int32.TryParse(match.Groups[2].Value, out int id))
+        {
+            modelElement.ID = id;
+        }
+
         usedCategories.Add(modelElement.Category);
         elements.Add(modelElement);
     }
@@ -112,6 +118,7 @@ public class ModelData
         string pipeCategory = match.Groups[1].Value.Replace(" ", "");
         pipeCategory = pipeCategory.Replace("_", "");
 
+
         if (categories.Exists(category => string.Equals(category.ToString(), pipeCategory, StringComparison.OrdinalIgnoreCase)))
         {
             AddCategory(pipe, pipeCategory);
@@ -119,6 +126,11 @@ public class ModelData
         else
         {
             AddCategory(pipe, "Undefined");
+        }
+
+        if (Int32.TryParse(match.Groups[2].Value, out int id))
+        {
+            pipe.ID = id;
         }
     }
 
@@ -130,6 +142,7 @@ public class ModelData
 
         string fittingCategory = match.Groups[1].Value.Replace(" ", "");
         fittingCategory = fittingCategory.Replace("_", "");
+
 
         if (categories.Exists(category => string.Equals(category.ToString(), fittingCategory, StringComparison.OrdinalIgnoreCase)))
         {
@@ -146,6 +159,11 @@ public class ModelData
             {
                 AddCategory(fitting, "Undefined");
             }
+        }
+
+        if (Int32.TryParse(match.Groups[2].Value, out int id))
+        {
+            fitting.ID = id;
         }
     }
     private Category FindCategory(string categoryName)

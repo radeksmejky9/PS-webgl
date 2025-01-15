@@ -1,11 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Pointer : MonoBehaviour
 {
+    public static event Action<ModelElement> OnModelElementUpdated;
+
     private Camera cam;
     private Category currentCategory = null;
     void Start()
@@ -38,6 +38,8 @@ public class Pointer : MonoBehaviour
                 if (EventSystem.current.IsPointerOverGameObject()) return;
 
                 modelElement.OnClick(currentCategory);
+                OnModelElementUpdated?.Invoke(modelElement);
+
             }
         }
     }

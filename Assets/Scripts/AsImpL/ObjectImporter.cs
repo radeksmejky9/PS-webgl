@@ -337,7 +337,7 @@ namespace AsImpL
             string ext = Path.GetExtension(absolutePath);
             if (string.IsNullOrEmpty(ext))
             {
-                Debug.LogError("No extension defined, unable to detect file format. Defaulting to .obj");
+                Debug.LogWarning("No extension defined, unable to detect file format. Defaulting to .obj");
                 ext = ".obj";
             }
             Loader loader = null;

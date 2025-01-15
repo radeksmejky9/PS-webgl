@@ -9,29 +9,33 @@ public class ModelManager : MonoBehaviour
     public static event Action<HashSet<Category>> OnModelsLoaded;
     public ModelTypes ModelTypes;
 
-    [SerializeField] private List<Transform> models = new List<Transform>();
-    [SerializeField] private List<ModelData> modelDatas = new List<ModelData>();
+    [SerializeField] private Transform model = null;
+    [SerializeField] private ModelData modelData = null;
 
-    private ModelData currentModel;
+    [SerializeField]
+    private List<ModelElement> elementUpdates = new List<ModelElement>();
+    public List<ModelElement> ElementUpdates => elementUpdates;
 
     private void OnEnable()
     {
         ToggleButtonManager.OnCategoryToggled += OnCategoryToggled;
-        ContentLoader.OnModelLoad += LoadModels;
+        ContentLoader.OnModelLoad += LoadModel;
         ContentLoader.OnModelLoadStart += OnModelLoadStart;
         ObjectImporter.ImportingStart += OnModelImportStart;
         ObjectImporter.ImportedModel += OnModelImported;
         ObjectBuilder.ObjectBuilt += OnObjectBuilt;
+        Pointer.OnModelElementUpdated += OnModelElementUpdated;
     }
 
     private void OnDisable()
     {
         ToggleButtonManager.OnCategoryToggled -= OnCategoryToggled;
-        ContentLoader.OnModelLoad -= LoadModels;
+        ContentLoader.OnModelLoad -= LoadModel;
         ContentLoader.OnModelLoadStart -= OnModelLoadStart;
         ObjectImporter.ImportingStart -= OnModelImportStart;
         ObjectImporter.ImportedModel -= OnModelImported;
         ObjectBuilder.ObjectBuilt -= OnObjectBuilt;
+        Pointer.OnModelElementUpdated -= OnModelElementUpdated;
 
     }
     private void OnModelLoadStart()
@@ -40,70 +44,56 @@ public class ModelManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        models.Clear();
-        modelDatas.Clear();
+        model = null;
+        modelData = null;
     }
 
     private void OnModelImportStart()
     {
-        currentModel = new ModelData(ModelTypes, categories: ContentLoader.Instance.Categories);
-        modelDatas.Add(currentModel);
+        modelData = new ModelData(ModelTypes, categories: ContentLoader.Instance.Categories);
     }
+
     private void OnModelImported(GameObject model, string path)
     {
-        currentModel.Model = model;
-        models.Add(model.transform);
-        LoadModels(models);
-        currentModel.ProccessFittings();
-        currentModel = null;
+        modelData.Model = model;
+        this.model = model.transform;
+        LoadModel(this.model);
+        modelData.ProccessFittings();
     }
 
     private void OnObjectBuilt(GameObject element)
     {
-        if (currentModel == null) return;
+        if (modelData == null) return;
 
-        currentModel.BuildElement(element);
-    }
-
-    private void EnableModels(SnappingPoint sp)
-    {
-        models.ForEach(model => { model.gameObject.SetActive(true); });
+        modelData.BuildElement(element);
     }
 
     private void OnCategoryToggled(Category category, bool isActive)
     {
-        foreach (var data in modelDatas)
+        if (isActive)
         {
-            if (isActive)
-            {
-
-                data.Filter.Add(category);
-            }
-            else
-            {
-                data.Filter.Remove(category);
-            }
-            UpdateVisibility(data);
+            modelData.Filter.Add(category);
         }
-    }
-    private void UpdateVisibility(ModelData data)
-    {
-        foreach (var element in data.GetElements())
+        else
         {
-            element.gameObject.SetActive(data.Filter.Contains(element.Category));
+            modelData.Filter.Remove(category);
+        }
+
+        foreach (var element in modelData.GetElements())
+        {
+            element.gameObject.SetActive(modelData.Filter.Contains(element.Category));
         }
     }
 
-    private void LoadModels(List<Transform> models)
+    private void LoadModel(Transform model)
     {
-        HashSet<Category> combinedCategories = new HashSet<Category>();
-
-        foreach (var data in modelDatas)
-        {
-            combinedCategories.UnionWith(data.UsedCategories);
-            data.Model.transform.parent = transform;
-            data.Model.SetActive(true);
-        }
-        OnModelsLoaded?.Invoke(combinedCategories);
+        modelData.Model.transform.parent = transform;
+        modelData.Model.SetActive(true);
+        OnModelsLoaded?.Invoke(modelData.UsedCategories);
+    }
+    private void OnModelElementUpdated(ModelElement element)
+    {
+        if (!elementUpdates.Contains(element))
+            elementUpdates.Add(element);
     }
 }

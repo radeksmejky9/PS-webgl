@@ -5,20 +5,15 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using AsImpL;
-using System.IO;
 
 public class ContentLoader : MonoSingleton<ContentLoader>
 {
-    public string serverURL;
-
-    public static event Action<List<Transform>> OnModelLoad;
+    public static event Action<Transform> OnModelLoad;
     public static event Action OnModelLoadStart;
     public static Action OnDownloadStart;
     public static Action OnDownloadEnd;
     public static Action<float> OnDownloadProgressChanged;
 
-
-    public List<Transform> Models => loadedModels;
     public List<Category> Categories
     {
         get
@@ -39,7 +34,6 @@ public class ContentLoader : MonoSingleton<ContentLoader>
     private MultiObjectImporter MultiObjectImporter;
     private List<Category> loadedCategories = new List<Category>();
     private List<CategoryGroup> loadedCategoryGroups = new List<CategoryGroup>();
-    private List<Transform> loadedModels = new List<Transform>();
     private string uid = string.Empty;
 
     protected override void Awake()
@@ -53,12 +47,9 @@ public class ContentLoader : MonoSingleton<ContentLoader>
     {
         yield return LoadDataAsync("Category Group", loadedCategoryGroups);
         yield return LoadDataAsync("Category", loadedCategories);
+
 #if UNITY_EDITOR
-        //MultiObjectImporter.ImportModelAsync("Model", $"http://192.168.37.142:5000/files/6758016b798dce146441e571/download/obj", this.transform, MultiObjectImporter.defaultImportOptions);
-        //MultiObjectImporter.ImportModelAsync("Model", "http://www.etikos.cz/data/main.obj", this.transform, MultiObjectImporter.defaultImportOptions);
-        //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/98x0r1wmgz2j.obj", this.transform, MultiObjectImporter.defaultImportOptions);
-        //MultiObjectImporter.ImportModelAsync("Model", "C:/Users/Helmanz/Downloads/Model.obj", this.transform, MultiObjectImporter.defaultImportOptions);
-        LoadModelFromJS("6780ce03e72a3ee7c20d4976,http://192.168.37.142:5000/files/6780ce03e72a3ee7c20d4976/download/obj");
+        LoadModelFromJS("6787b20984593d6323e49369,http://192.168.37.142:5000/files/6787b20984593d6323e49369/download/obj");
 #endif
     }
 
@@ -77,13 +68,6 @@ public class ContentLoader : MonoSingleton<ContentLoader>
         {
             Debug.LogError($"Failed to load items with the label '{label}'");
         }
-
-        //Addressables.Release(handle);
-    }
-
-    public void LoadModel(SnappingPoint sp)
-    {
-        MultiObjectImporter.ImportModelAsync($"{sp.Building}-{sp.Room}", Path.Combine(serverURL, sp.Url), this.transform, MultiObjectImporter.defaultImportOptions);
     }
 
     public void LoadModelFromJS(string message)

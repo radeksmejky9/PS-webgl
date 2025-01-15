@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 using UnityEngine;
 
 public static class Extensions
@@ -97,5 +98,21 @@ public static class Extensions
     public static string RemoveWhiteSpace(this string str)
     {
         return str.Trim().Replace(" ", "_");
+    }
+    public static string ToReadableSize(this string str)
+    {
+        byte[] byteArray = Encoding.UTF8.GetBytes(str);
+        long byteSize = byteArray.Length;
+
+        if (byteSize < 1024)
+            return $"{byteSize} B";
+        else if (byteSize < 1048576)
+            return $"{byteSize / 1024.0:F2} KB";
+        else if (byteSize < 1073741824)
+            return $"{byteSize / 1048576.0:F2} MB";
+        else if (byteSize < 1099511627776)
+            return $"{byteSize / 1073741824.0:F2} GB";
+        else
+            return $"{byteSize / 1099511627776.0:F2} TB";
     }
 }

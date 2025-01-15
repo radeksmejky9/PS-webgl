@@ -3,6 +3,7 @@
 public class ModelElement : MonoBehaviour
 {
     [SerializeField] protected Category category;
+    [SerializeField] protected int modelID;
     [SerializeField] private ModelType modelType;
     private MeshRenderer meshRenderer;
 
@@ -27,6 +28,16 @@ public class ModelElement : MonoBehaviour
         }
     }
 
+    public int ID
+    {
+        get => modelID;
+        set
+        {
+            modelID = value;
+            Rename();
+        }
+    }
+
     public ModelType ModelType
     {
         get => modelType;
@@ -40,6 +51,6 @@ public class ModelElement : MonoBehaviour
 
     protected virtual void Rename()
     {
-        this.gameObject.name = $"{modelType.Type}:{category.name}:";
+        this.gameObject.name = $"{modelType.Type}:{category.name}:_ID{modelID}_:";
     }
 }

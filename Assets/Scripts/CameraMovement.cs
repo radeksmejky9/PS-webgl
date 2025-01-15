@@ -10,6 +10,7 @@ public class CameraMovement : MonoBehaviour
     public float maxOrbitSpeed = 5f;
     [Tooltip("Minimum orbit speed when closest to objects.")]
     public float minOrbitSpeed = 1f;
+    [SerializeField] private float currentOrbitSpeed;
 
     [Header("Pan Settings")]
     [Tooltip("Speed of camera panning.")]
@@ -25,9 +26,11 @@ public class CameraMovement : MonoBehaviour
     [Tooltip("Maximum distance from the target for zoom.")]
     public float maxZoomDistance = 50f;
 
-    [Header("WASD Movement Settings")]
+    [Header("Movement Settings")]
     [Tooltip("Base movement speed for WASD controls.")]
     public float moveSpeed = 10f;
+    [Tooltip("Base movement speed for QE controls.")]
+    public float elevationSpeed = 5f;
     [Tooltip("Multiplier for movement speed when holding Shift.")]
     public float boostMultiplier = 2f;
 
@@ -35,8 +38,6 @@ public class CameraMovement : MonoBehaviour
     private float targetDistance; // Desired distance (for smooth zooming).
     private Vector3 lastMousePosition;
 
-    [SerializeField]
-    private float currentOrbitSpeed;
 
     private bool isActive = false; // Flag to activate controls.
 
@@ -109,10 +110,24 @@ public class CameraMovement : MonoBehaviour
         Vector3 forwardMovement = transform.forward * vertical;
         Vector3 rightMovement = transform.right * horizontal;
 
-        transform.position += moveMultiplier * moveSpeed * Time.deltaTime * (forwardMovement + rightMovement);
+        float upDown = 0f;
+        if (Input.GetKey(KeyCode.E))
+        {
+            upDown = -1f; // Move down.
+        }
+        else if (Input.GetKey(KeyCode.Q))
+        {
+            upDown = 1f; // Move up.
+        }
+
+        Vector3 upDownMovement = transform.up * upDown * elevationSpeed;
+
+        transform.position += moveMultiplier * moveSpeed * Time.deltaTime * (forwardMovement + rightMovement + upDownMovement);
 
         lastMousePosition = Input.mousePosition;
     }
+
+
 
     void SmoothZoom()
     {

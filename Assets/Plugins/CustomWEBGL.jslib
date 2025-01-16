@@ -1,14 +1,16 @@
 mergeInto(LibraryManager.library, {
-    saveModel: function(fileIDPtr, fileContentPtr) {
-        // Convert Unity's string pointers to JavaScript strings
-        var fileID = UTF8ToString(fileIDPtr);
-        var fileContent = UTF8ToString(fileContentPtr);
+    UploadQR: function(x, y, z, yRot) {
+        // Use the passed parameters directly
+        var xPos = x;
+        var yPos = y;
+        var zPos = z;
+        var yRotation = yRot;
 
         // Call the external JavaScript function (must be globally accessible)
-        if (typeof saveModel === "function") {
-            saveModel(fileID, fileContent);
+        if (typeof window.UploadQR === "function") {
+            window.UploadQR(xPos, yPos, zPos, yRotation); // Explicitly call the global UploadQR
         } else {
-            console.error("saveModel is not defined in the hosting page.");
+            console.error("UploadQR is not defined in the hosting page.");
         }
     }
 });

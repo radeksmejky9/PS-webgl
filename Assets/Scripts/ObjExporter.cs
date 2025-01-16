@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine.UI;
 
-
 public class Uploader : MonoBehaviour
 {
     public ModelManager manager;
